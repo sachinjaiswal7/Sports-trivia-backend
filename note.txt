@@ -1,0 +1,1 @@
+urls of the team image needs to be added in the (.../match/add) route 
