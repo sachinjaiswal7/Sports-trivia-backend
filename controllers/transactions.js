@@ -1,10 +1,14 @@
+import Transaction from "../models/transaction.js";
 
-export const createTransaction = async(description, user,amount,isReferral) => {
+export const createTransaction = async(description, user,amount,isReferral,status,resOfData = {}) => {
     const newTransaction = {
+        userId : user._id,
         description,
-        amount
+        amount,
+        transactionStatus : status,
+        ...resOfData
     }
-    user.transactions.push(newTransaction);
+    await Transaction.create(newTransaction);
 
     //if the type of money to increase of decrease is referral then do it for that.
     if(isReferral){

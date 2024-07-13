@@ -2,22 +2,12 @@ import mongoose from "mongoose";
 
 const matchSchema = new mongoose.Schema({
     homeTeam : {
-        teamName : {
-            type : String,
-            required : true
-        },
-        imageUrl : {
-            type : String,
-        }
+        type : mongoose.Schema.Types.ObjectId,
+        ref  : "Team"
     },
     awayTeam : {
-        teamName : {
-            type : String,
-            required : true
-        },
-        imageUrl : {
-            type : String
-        }
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "Team"
     },
     time : {
         type : Date,

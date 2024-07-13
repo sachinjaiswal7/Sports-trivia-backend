@@ -8,6 +8,7 @@ import CustomError from "../utils/customError.js";
 import createToken from "../utils/createToken.js";
 import { createTransaction } from "../controllers/transactions.js";
 import isAuthenticated from "../utils/isAuthenticated.js";
+import { TRANSACTION_STATUS } from "../Constants/Constants.js";
 
 const router = express.Router();
 
@@ -133,13 +134,14 @@ router.post("/verifyOtp", async (req, res, next) => {
             const referrerAccount = await User.findOne({ myReferral: otpEntry.otherReferral });
 
             // referral bonus transaction for current created user 
-            await createTransaction(`Referral Bonus By ${referrerAccount.myReferral}`, user, process.env.REFERRAL_AMOUNT, true);
+            await createTransaction(`Referral Bonus By ${referrerAccount.myReferral}`, user, process.env.REFERRAL_AMOUNT, true,TRANSACTION_STATUS.SUCCESS);
 
             // referral bonus transaction for referrer User 
-            await createTransaction(`Referred Bonus ${user.myReferral}`, referrerAccount, process.env.REFERRAL_AMOUNT, true);
+            await createTransaction(`Referred Bonus ${user.myReferral}`, referrerAccount, process.env.REFERRAL_AMOUNT, true,TRANSACTION_STATUS.SUCCESS);
         }
 
         user.password = null;
+        user.transactions = null;
         const token = createToken(user._id);
 
         res.status(200).json({
@@ -187,7 +189,7 @@ router.post("/login", async (req, res, next) => {
 
         //hiding the password from the frontend.
         user.password = null;
-
+        user.transactions = null;
         const token = createToken(user._id);
 
 

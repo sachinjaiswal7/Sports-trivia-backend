@@ -1,12 +1,14 @@
 import express from "express";
 import isAuthenticated from "../utils/isAuthenticated.js";
 import Teams from "../models/teams.js";
+import { ROLE } from "../Constants/Constants.js";
 
 const router = express.Router();
 
+//api to add a new team in the database. 
 router.post("/add", isAuthenticated, async (req, res,) => {
     try {
-        if (req.user.role != 'admin') {
+        if (req.user.role != ROLE.ADMIN) {
             return res.status(400).json({
                 success: false,
                 message: "You can't access this api"
@@ -54,6 +56,27 @@ router.delete("/delete/:teamId", isAuthenticated, async (req, res) => {
         })
 
     } catch (err) {
+
+    }
+})
+
+router.get("/getAll",isAuthenticated, async(req,res) => {
+    try{
+        if (req.user.role != ROLE.ADMIN) {
+            return res.status(400).json({
+                success: false,
+                message: "You can't access this api"
+            })
+        }
+
+        const allTeams = await Teams.find({});
+        return res.status(200).json({
+            success: true,
+            message: "Found all the teams",
+            data: allTeams
+        })
+
+    }catch(err){
 
     }
 })

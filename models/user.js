@@ -29,23 +29,6 @@ const userSchema = new mongoose.Schema({
             default : 0
         }
     },
-    transactions :[
-        {
-         description : {
-            type : String,
-            required : true
-         },
-         time : {
-            type : Date,
-            default : Date.now
-         },
-         amount : {
-            type : Number,
-            required : true
-         }
-
-        }
-    ],
     otherReferral : {
         type : String,
     },

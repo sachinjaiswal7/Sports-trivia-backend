@@ -30,11 +30,7 @@ app.use(express.urlencoded({extended : true}))
 
 
 //cors configuration 
-app.use(cors({
-    origin : [process.env.FRONTEND_DOMAIN],
-    methods : ["GET","POST","DELETE","PUT"],
-    credentials : true
-}))
+app.use(cors())
 
 app.get("/",(req,res) => {
     res.json({

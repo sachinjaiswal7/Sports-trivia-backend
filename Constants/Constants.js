@@ -3,3 +3,14 @@ export const QUESTION = {
     CORRECT : "correct",
     WRONG : "wrong"
 }
+
+export const TRANSACTION_STATUS = {
+    PENDING : "PENDING",
+    SUCCESS : "SUCCESS",
+    FAILED : "FAILED"
+}
+
+export const ROLE = {
+    USER : "user",
+    ADMIN : "admin"
+}
