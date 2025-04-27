@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const questionSchema = new mongoose.Schema({
+    // match  id determines to which particular math these questions belongs to.
     matchId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Match",

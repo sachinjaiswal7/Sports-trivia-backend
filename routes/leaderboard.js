@@ -39,52 +39,54 @@ router.get("/showLeaderboard/:matchId", isAuthenticated, async (req, res, next) 
             for (let t = 0; t < questionsOfMatch.length; t++) {// iterating through all the questions given for each half 
 
                 // two pointer calculation 
-                for (let j = 0; j < allUserSelectedQuestions[i].choosenQuestion[questionsOfMatch[t].half - 1].twoPointer.length; j++) {
-                    questionsOfMatch[t].twoPointer.map((item) => {
-                        if(item.status != QUESTION.CORRECT)return;
-                        if (String(item._id) == allUserSelectedQuestions[i].choosenQuestion[questionsOfMatch[t].half - 1].twoPointer[j]) {
-                            currentUserScore += 2;
-                        }
-                    })
-                }
-                // four poitner calculation
-                for (let j = 0; j < allUserSelectedQuestions[i].choosenQuestion[questionsOfMatch[t].half - 1].fourPointer.length; j++) {
-                    questionsOfMatch[t].fourPointer.map((item) => {
-                        if(item.status != QUESTION.CORRECT)return;
-                        if (String(item._id) == allUserSelectedQuestions[i].choosenQuestion[questionsOfMatch[t].half - 1].fourPointer[j]) {
-                            currentUserScore += 4;
-                        }
-                    })
-                }
-                //sixpointer calculation 
-                for (let j = 0; j < allUserSelectedQuestions[i].choosenQuestion[questionsOfMatch[t].half - 1].sixPointer.length; j++) {
-                    questionsOfMatch[t].sixPointer.map((item) => {
-                        if(item.status != QUESTION.CORRECT)return;
-                        if (String(item._id) == allUserSelectedQuestions[i].choosenQuestion[questionsOfMatch[t].half - 1].sixPointer[j]) {
-                            currentUserScore += 6;
-                        }
-                    })
+                if (allUserSelectedQuestions[i]?.choosenQuestion?.length >= questionsOfMatch[t].half) {
+                    for (let j = 0; j < allUserSelectedQuestions[i].choosenQuestion[questionsOfMatch[t].half - 1].twoPointer.length; j++) {
+                        questionsOfMatch[t].twoPointer.map((item) => {
+                            if (item.status != QUESTION.CORRECT) return;
+                            if (String(item._id) == allUserSelectedQuestions[i].choosenQuestion[questionsOfMatch[t].half - 1].twoPointer[j]) {
+                                currentUserScore += 2;
+                            }
+                        })
+                    }
+                    // four poitner calculation
+                    for (let j = 0; j < allUserSelectedQuestions[i].choosenQuestion[questionsOfMatch[t].half - 1].fourPointer.length; j++) {
+                        questionsOfMatch[t].fourPointer.map((item) => {
+                            if (item.status != QUESTION.CORRECT) return;
+                            if (String(item._id) == allUserSelectedQuestions[i].choosenQuestion[questionsOfMatch[t].half - 1].fourPointer[j]) {
+                                currentUserScore += 4;
+                            }
+                        })
+                    }
+                    //sixpointer calculation 
+                    for (let j = 0; j < allUserSelectedQuestions[i].choosenQuestion[questionsOfMatch[t].half - 1].sixPointer.length; j++) {
+                        questionsOfMatch[t].sixPointer.map((item) => {
+                            if (item.status != QUESTION.CORRECT) return;
+                            if (String(item._id) == allUserSelectedQuestions[i].choosenQuestion[questionsOfMatch[t].half - 1].sixPointer[j]) {
+                                currentUserScore += 6;
+                            }
+                        })
+                    }
                 }
             }
-            for(let j = 0;j < allUser.length;j++){
-                if(allUser[j].id == allUserSelectedQuestions[i].userId){
+            for (let j = 0; j < allUser.length; j++) {
+                if (allUser[j].id == allUserSelectedQuestions[i].userId) {
                     userLeaderboard.push({
-                        id : allUser[j].id,
-                        name : allUser[j].name,
-                        score : currentUserScore
+                        id: allUser[j].id,
+                        name: allUser[j].name,
+                        score: currentUserScore
                     })
                 }
             }
         }
-        userLeaderboard.sort((a,b) => (a.score - b.score));
+        userLeaderboard.sort((a, b) => (a.score - b.score));
         let currentStanding = 1;
-        for(let j = 0;j < userLeaderboard.length;j++){
-            if(j > 0 && (userLeaderboard[j].score != userLeaderboard[j - 1].score))currentStanding++;
+        for (let j = 0; j < userLeaderboard.length; j++) {
+            if (j > 0 && (userLeaderboard[j].score != userLeaderboard[j - 1].score)) currentStanding++;
             userLeaderboard[j] = {
                 ...userLeaderboard[j],
-                position  : currentStanding
+                position: currentStanding
             }
-            if(String(userLeaderboard[j].id) == String(req.user._id)){
+            if (String(userLeaderboard[j].id) == String(req.user._id)) {
                 you = userLeaderboard[j];
                 break;
             }
@@ -102,7 +104,7 @@ router.get("/showLeaderboard/:matchId", isAuthenticated, async (req, res, next) 
 
 
     } catch (err) {
-        next(new CustomError(500,err.message,true));
+        next(new CustomError(500, err.message, true));
     }
 
 })

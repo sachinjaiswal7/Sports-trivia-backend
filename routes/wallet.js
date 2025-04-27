@@ -90,7 +90,15 @@ router.get("/all-withdrawals", isAuthenticated, async (req, res, next) => {
         if (req.user.role != ROLE.ADMIN) {
             return next(new CustomError(400, "You shouldn't be here"));
         }
-        const getAllWithdrawals = await Transaction.find({ transactionStatus: TRANSACTION_STATUS.PENDING, mobileNumber: { $nin: [null, '', undefined] } }).sort({ time: -1 });
+        const { statusFilter } = req.query;
+
+        //checking if the statusFilter variable is given or not.
+        if (!statusFilter) {
+            throw new CustomError(400, "Status Filter is required")
+        }
+
+        //we are finding all the transactions from the databse which have a particular status.
+        const getAllWithdrawals = await Transaction.find({ transactionStatus: statusFilter, mobileNumber: { $nin: [null, '', undefined] } }).sort({ time: 1 });
         return res.status(200).json({
             success: true,
             message: "Found all the withdrawals",
@@ -101,27 +109,40 @@ router.get("/all-withdrawals", isAuthenticated, async (req, res, next) => {
     }
 })
 
-router.post("/change-withdrawal-status", isAuthenticated, async (req, res, next) => {
+router.put("/change-withdrawal-status", isAuthenticated, async (req, res, next) => {
     try {
         if (req.user.role != ROLE.ADMIN) {
             return next(new CustomError(400, "You can't perform this action"));
         }
-        const { trans_id,change_status } = req.body
+        const { trans_id, change_status } = req.body
 
-        if(!trans_id || !change_status){
+        if (!trans_id || !change_status) {
             return next(new CustomError(400, "Transaction Id is required"));
         }
         const findTransaction = await Transaction.findById(trans_id);
-        if(!findTransaction){
-            return next(new CustomError(404,"No withdrawal found with this given id"));
+        if (!findTransaction) {
+            return next(new CustomError(404, "No withdrawal found with this given id"));
         }
 
         findTransaction.transactionStatus = change_status
         await findTransaction.save();
 
         return res.status(200).json({
-            success : true,
-            message : "Changed the status successfully"
+            success: true,
+            message: "Changed the status successfully"
+        })
+    } catch (err) {
+        next(err);
+    }
+})
+
+
+router.get("/hello-world", async (req, res, next) => {
+    try {
+
+        return res.status(200).json({
+            success: true,
+            message: "Changed the status successfully"
         })
     } catch (err) {
         next(err);
